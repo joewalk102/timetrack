@@ -1,0 +1,122 @@
+<!-- File: src/TimeTrack/templates/project/project_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ project.name }} - Detail{% endblock %}
+
+{% block head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-lg-10 offset-lg-1">
+
+        <!-- Project Header -->
+        <div class="mb-4">
+          <h2>{{ project.name }}</h2>
+          <p class="text-muted">Year: {{ current_year }}</p>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">Monthly Time Tracking - {{ current_year }}</h5>
+          </div>
+          <div class="card-body">
+            <canvas id="monthlyChart" height="80"></canvas>
+          </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <div class="card text-center">
+              <div class="card-body">
+                <h6 class="card-title text-muted">Total Hours</h6>
+                <h2 class="card-text">{{ total_hours }}</h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card text-center">
+              <div class="card-body">
+                <h6 class="card-title text-muted">Average per Month</h6>
+                <h2 class="card-text">
+                  {{ total_hours|add:"0.0"|add:"-0"|add:"+"|add:"12"|add:"/"|add:"12" }}{% widthratio total_hours 12 0 %}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Table -->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Monthly Breakdown</h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>Month</th>
+                <th>Hours</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for item in monthly_data %}
+                <tr>
+                  <td>{{ item.month }}</td>
+                  <td><span class="badge bg-info">{{ item.hours }}</span></td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="mt-4">
+          <a href="{% url 'project:home' %}" class="btn btn-outline-secondary">Back to Projects</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+      // Chart.js configuration
+      const ctx = document.getElementById('monthlyChart').getContext('2d');
+      const monthlyChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: [{% for item in monthly_data %}'{{ item.month }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+              datasets: [{
+                  label: 'Hours Tracked',
+                  data: [{% for item in monthly_data %}{{ item.hours }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                  backgroundColor: 'rgba(13, 110, 253, 0.5)',
+                  borderColor: 'rgba(13, 110, 253, 1)',
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              scales: {
+                  y: {
+                      beginAtZero: true,
+                      title: {
+                          display: true,
+                          text: 'Hours'
+                      }
+                  }
+              },
+              plugins: {
+                  legend: {
+                      display: true,
+                      position: 'top'
+                  }
+              }
+          }
+      });
+  </script>
+{% endblock %}

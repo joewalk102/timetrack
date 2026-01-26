@@ -1,0 +1,76 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Weekly Overview</h5>
+    <div class="btn-group btn-group-sm" role="group">
+      <button
+        hx-get="{% url 'calview:hx_weekly_calendar_data' %}?week_offset={{ offset.0 }}"
+        hx-swap="outerHTML"
+        hx-target="closest .card"
+        class="btn btn-outline-secondary">
+        ←
+      </button>
+      <button
+        hx-get="{% url 'calview:hx_weekly_calendar_data' %}"
+        hx-swap="outerHTML"
+        hx-target="closest .card"
+        class="btn btn-outline-secondary">
+        Today
+      </button>
+      <button
+        hx-get="{% url 'calview:hx_weekly_calendar_data' %}?week_offset={{ offset.1 }}"
+        hx-swap="outerHTML"
+        hx-target="closest .card"
+        class="btn btn-outline-secondary">
+        →
+      </button>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr class="">
+            <th class="text-center" style="width: 14%;">Mon</th>
+            <th class="text-center" style="width: 14%;">Tue</th>
+            <th class="text-center" style="width: 14%;">Wed</th>
+            <th class="text-center" style="width: 14%;">Thu</th>
+            <th class="text-center" style="width: 14%;">Fri</th>
+            <th class="text-center" style="width: 14%;">Sat</th>
+            <th class="text-center" style="width: 14%;">Sun</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {% for day in week_days %}
+            <td class="p-2" style="min-height: 150px;">
+              <div class="small mb-2 text-center">
+                <strong>{{ day.day|date:'d' }}</strong>
+                <span class="text-muted text-nowrap">{{ day.day|date:'M' }}</span>
+              </div>
+              <div class="d-flex flex-column gap-1 text-center">
+                {% for e_name, entry in day.by_project.items %}
+                <div class="p-2 rounded text-truncate" style="background-color: {{ entry.project_color }}; font-size: 0.75rem;">
+                  <span class="text-nowrap" title="{{ e_name }}">
+                    {{ e_name|truncatewords:2 }}
+                  </span>
+                  <br>
+                  <strong class="text-muted">{{ entry }}h</strong>
+                </div>
+                {% empty %}
+                <span class="text-muted small text-center">No time tracked</span>
+                {% endfor %}
+              </div>
+              <div class="mt-2 pt-2 border-top text-center">
+                <small><strong>{{ day.hours }}h</strong></small>
+              </div>
+            </td>
+            {% endfor %}
+          </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer text-center">
+    <small class="text-muted">Week of {{ start_date|date:'M d' }} - {{ end_date|date:'M d, Y' }}</small>
+  </div>
+</div>

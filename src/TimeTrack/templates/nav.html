@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{% url 'project:home' %}">TimeTrack</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link{% if 'project' in request.path %} active{% endif %}" href="{% url 'project:home' %}">
+            Projects
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link{% if 'calendar' in request.path %} active{% endif %}"
+             href="{% url 'calview:home' %}">
+            Calendar
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a href="{% url 'authentication:settings_page' %}" class="link-secondary text-decoration-none">
+              <span class="nav-link">{{ user.username }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'authentication:logout' %}">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'authentication:login' %}">Login</a>
+          </li>{% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

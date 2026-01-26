@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Projects{% endblock %}
+
+{% block head %}
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <h2 class="mb-4">Projects</h2>
+        <div class="list-group">
+          {% for project in projects %}
+            <div hx-get="{% url 'project:hx_list_item' project.id %}"
+                 hx-swap="outerHTML"
+                 hx-trigger="load"
+                 id="status-{{ project.id }}">
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
