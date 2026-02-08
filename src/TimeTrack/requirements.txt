@@ -1,0 +1,5 @@
+Django~=6.0.1
+django-cockroachdb~=6.0
+psycopg==3.3.2
+google-cloud-secret-manager~=2.26.0
+pytz~=2025.2
