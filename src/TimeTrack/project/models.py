@@ -43,10 +43,11 @@ class Project(models.Model):
 
     @property
     def last_started_at(self):
-        time_last_started = self.time_entries.order_by("-start_time").first().start_time
-        log.info(f"Last started at (UTC): {time_last_started}")
-        if not time_last_started:
+        last_entry = self.time_entries.order_by("-start_time").first()
+        if not last_entry:
             return None
+        time_last_started = last_entry.start_time
+        log.info(f"Last started at (UTC): {time_last_started}")
         user_last_started = convert_to_user_time(time_last_started, self.owner)
         log.info(f"Last started at (User Time): {user_last_started}")
         return user_last_started.strftime("%Y-%m-%d %I:%M:%S %p")

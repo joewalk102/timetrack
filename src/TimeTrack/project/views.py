@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from library.project_operations.data_processing import EntriesOverTime
@@ -8,7 +8,7 @@ from project.models import Project
 
 @login_required()
 def home(request):
-    projects = Project.objects.filter(owner=request.user).all()
+    projects = Project.objects.filter(owner=request.user).order_by("name").all()
     return render(
         request,
         "project/home.html",
@@ -42,6 +42,15 @@ def project_detail(request, project_id):
 
 
 @login_required
+def delete_project(request, project_id):
+    project = Project.objects.get(id=project_id)
+    if request.method == "POST":
+        project.delete()
+        return redirect("project:home")
+    return None
+
+
+@login_required
 def hx_list_item(request, project_id):
     project = Project.objects.get(id=project_id)
     if request.GET.get("action") == "stop":
@@ -53,3 +62,20 @@ def hx_list_item(request, project_id):
         "project/htmx/list_item.html",
         context={"project": project},
     )
+
+
+@login_required
+def hx_new_project(request):
+    if request.method == "GET":
+        return render(request, "project/htmx/new_list_item.html")
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        if name:
+            project = Project.objects.create(name=name, owner=request.user)
+            return render(
+                request,
+                "project/htmx/list_item.html",
+                context={"project": project},
+            )
+    return render(request, "project/htmx/new_list_item.html")

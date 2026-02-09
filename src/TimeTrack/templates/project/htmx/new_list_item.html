@@ -1,0 +1,23 @@
+<div class="list-group-item p-2" id="new-project-container">
+  <form hx-post="{% url 'project:hx_new_project' %}" hx-swap="outerHTML" hx-target="#new-project-container">
+    {% csrf_token %}
+    <div class="d-flex justify-content-between align-items-center gap-3">
+      <div class="flex-grow-1 my-3 me-3">
+        <input type="text"
+               name="name"
+               class="form-control"
+               placeholder="Enter project name"
+               required>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="submit" class="btn btn-primary btn-sm">
+          Create
+        </button>
+        <button class="btn btn-danger btn-sm" hx-delete="/delete" hx-target="#new-project-container" hx-swap="delete">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+</div>
