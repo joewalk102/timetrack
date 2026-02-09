@@ -1,6 +1,7 @@
 from logging import getLogger
 from os import environ
 
+from google.api_core.exceptions import DeadlineExceeded
 from google.auth.exceptions import DefaultCredentialsError
 
 from library.gcloud.sec_mgr import SecretManagerClient
@@ -14,6 +15,11 @@ except DefaultCredentialsError:
     log.warning(
         "Could not load secrets from Secret Manager. Using environment "
         "variables instead."
+    )
+except DeadlineExceeded:
+    log.warning(
+        "Timeout while trying to load secrets from Secret Manager. Using "
+        "environment variables instead."
     )
 secret_key = environ.get("SECRET_KEY")
 allowed_hosts = environ.get("ALLOWED_HOSTS", "*").split(",")
