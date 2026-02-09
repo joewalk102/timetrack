@@ -25,8 +25,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy the application code
 COPY . .
-RUN cd src
-# Collect static files
 RUN python manage.py collectstatic --noinput
 
 # Create a non-root user and switch to it
