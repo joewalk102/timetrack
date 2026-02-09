@@ -30,7 +30,9 @@ DEBUG = config.debug
 
 # Allow your Cloud Run service URL and custom domains
 ALLOWED_HOSTS = config.allowed_hosts
-
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{host}" for host in config.allowed_hosts if host != "*"
+]
 
 # Application definition
 
